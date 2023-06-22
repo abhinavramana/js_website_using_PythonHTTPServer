@@ -8,20 +8,19 @@
     <form id="requestForm">
         <label for="negative_prompt">Negative Prompt:</label><br>
         <input type="text" id="negative_prompt" name="negative_prompt"><br>
-        <label for="task_id">Task ID:</label><br>
-        <input type="text" id="task_id" name="task_id" required><br>
-        <label for="prompt">Prompt:</label><br>
+        
+	<label for="prompt">Prompt:</label><br>
         <input type="text" id="prompt" name="prompt" required><br>
         <label for="height">Height:</label><br>
-        <input type="number" id="height" name="height" value="1024" required><br>
+        <input type="number" id="height" name="height" min="512" max="1024" value="1024" required><br>
         <label for="width">Width:</label><br>
-        <input type="number" id="width" name="width" value="1024" required><br>
-        <label for="style_model">Style Model:</label><br>
-        <input type="text" id="style_model" name="style_model" value="stable_diffusion_1.5" required><br>
+        <input type="number" id="width" name="width" min="512" max="1024" value="1024" required><br>
         <label for="steps">Steps:</label><br>
-        <input type="number" id="steps" name="steps" value="50" required><br>
+        <input type="number" id="steps" name="steps" min="1" max="100"  value="50" required><br>
         <label for="guidance">Guidance:</label><br>
-        <input type="number" id="guidance" name="guidance" value="7.5" required><br>
+        <input type="number" id="guidance" name="guidance" min="0" max="40" value="7.5"  required><br>
+        <label for="style_id">style_id:</label><br>
+        <input type="number" id="style_id" name="style_id" required><br>
         <label for="seed">Seed:</label><br>
         <input type="number" id="seed" name="seed"><br>
         <input type="submit" value="Submit">
@@ -31,7 +30,17 @@
 
     <script>
         $('#requestForm').on('submit', function(e) {
-            e.preventDefault();
+            
+	    // validate that height and width are divisible by 8
+            var height = parseInt($('#height').val());
+            var width = parseInt($('#width').val());
+            if (height % 8 !== 0 || width % 8 !== 0) {
+                alert('Height and width must be divisible by 8.');
+                e.preventDefault();
+                return;
+            }
+
+	    e.preventDefault();
             var formData = $(this).serializeArray().reduce(function(obj, item) {
                 obj[item.name] = item.value;
                 return obj;
